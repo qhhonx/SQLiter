@@ -36,7 +36,7 @@ group = GROUP
 version = VERSION_NAME
 
 def TEST_LINK_SQLITE_LIB = "/usr/local/lib/libsqlcipher.a"
-def TEST_LINK_FRAMEWORK = "/System/Library/Frameworks/Security.framework/Security"
+def TEST_LINK_FRAMEWORK = "-Wl,-framework,Security"
 
 kotlin {
     targets {

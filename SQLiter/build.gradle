@@ -49,7 +49,6 @@ kotlin {
             compilations.test {
                 it.extraOpts("-linker-options", "$TEST_LINK_FRAMEWORK")
                 it.extraOpts("-linker-options", "$TEST_LINK_SQLITE_LIB")
-                it.extraOpts("-native-library", "../KotlinCpp/bcdist/macos_x64/tlruntime.bc")
             }
         }
 
@@ -58,16 +57,12 @@ kotlin {
                 it.extraOpts("-linker-options", "-Lc:\\msys64\\mingw64\\lib")
                 it.extraOpts("-linker-options", "-lsqlite3")
             }
-            compilations.test {
-                it.extraOpts("-native-library", "../KotlinCpp/bcdist/mingw_x64/tlruntime.bc")
-            }
         }
 
         fromPreset(presets.iosX64, 'iosX64'){
             compilations.test {
                 it.extraOpts("-linker-options", "$TEST_LINK_FRAMEWORK")
                 it.extraOpts("-linker-options", "$TEST_LINK_SQLITE_LIB")
-                it.extraOpts("-native-library", "../KotlinCpp/bcdist/ios_x64/tlruntime.bc")
             }
         }
         
@@ -75,7 +70,6 @@ kotlin {
             compilations.test {
                 it.extraOpts("-linker-options", "$TEST_LINK_FRAMEWORK")
                 it.extraOpts("-linker-options", "$TEST_LINK_SQLITE_LIB")
-                it.extraOpts("-native-library", "../KotlinCpp/bcdist/ios_arm64/tlruntime.bc")
             }
         }
         
@@ -83,7 +77,6 @@ kotlin {
             compilations.test {
                 it.extraOpts("-linker-options", "$TEST_LINK_FRAMEWORK")
                 it.extraOpts("-linker-options", "$TEST_LINK_SQLITE_LIB")
-                it.extraOpts("-native-library", "../KotlinCpp/bcdist/ios_arm32/tlruntime.bc")
             }
         }
         
@@ -157,8 +150,8 @@ void mergeCppOutput(String archFolder, String archZip){
     }
 }
 
-task mergeCppAll(dependsOn:build) {
-    doLast {
+tasks.matching { it.name.startsWith('compile') }.forEach {
+    it.doLast {
         mergeCppOutput("iosArm32", "ios_arm32")
         mergeCppOutput("iosArm64", "ios_arm64")
         mergeCppOutput("iosX64", "ios_x64")
@@ -168,6 +161,3 @@ task mergeCppAll(dependsOn:build) {
 }
 
 apply from: "$rootDir/gradle/gradle-mvn-mpp-push.gradle"
-
-tasks.findByName("publish").dependsOn("mergeCppAll")
-tasks.findByName("publishToMavenLocal").dependsOn("mergeCppAll")
